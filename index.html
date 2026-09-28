@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASE STUDY 1: Rock Paper Scissors - Shashank Gowda (24BTRSN038)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-bounce-short { animation: bounce-short 0.6s ease; }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen selection:bg-sky-500 selection:text-white pb-16">
+
+    <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">Case Study #1</span>
+                        <span class="text-xs text-slate-400 font-mono">WEB PROGRAMMING LAB</span>
+                    </div>
+                    <h1 class="text-2xl font-extrabold tracking-tight text-white sm:text-3xl mt-1">
+                        Rock Paper Scissors Application
+                    </h1>
+                </div>
+
+                <!-- Academic Metadata Card -->
+                <div class="glass-card rounded-xl p-3 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs border border-slate-800">
+                    <div>
+                        <span class="block text-slate-500 font-medium">Student Name</span>
+                        <span class="font-bold text-slate-100">Shashank Gowda</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 font-medium">USN</span>
+                        <span class="font-mono text-sky-400 font-semibold">24BTRSN038</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 font-medium">Course / Subject</span>
+                        <span class="font-semibold text-slate-200">Web Programming Lab</span>
+                    </div>
+                    <div>
+                        <span class="block text-slate-500 font-medium">Status</span>
+                        <span class="inline-flex items-center text-emerald-400 font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+                            Hosted & Live
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <!-- Copyable Repo Link -->
+                    <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg p-1 max-w-full sm:w-80">
+                        <span class="px-2 text-slate-500 font-mono text-[10px]">REPO:</span>
+                        <input id="githubRepoInput" readonly value="https://github.com/shashankgowda/rps-web-lab" class="bg-transparent text-sky-400 font-mono text-xs focus:outline-none w-full truncate">
+                        <button onclick="copyToClipboard('githubRepoInput')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-semibold transition-colors">
+                            Copy
+                        </button>
+                    </div>
+
+                    <!-- Copyable Hosted Link -->
+                    <div class="flex items-center bg-slate-950 border border-slate-800 rounded-lg p-1 max-w-full sm:w-80">
+                        <span class="px-2 text-slate-500 font-mono text-[10px]">PAGES:</span>
+                        <input id="githubPagesInput" readonly value="https://shashankgowda.github.io/rps-web-lab" class="bg-transparent text-emerald-400 font-mono text-xs focus:outline-none w-full truncate">
+                        <button onclick="copyToClipboard('githubPagesInput')" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-semibold transition-colors">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-slate-400 text-[11px] flex items-center gap-1.5">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                    GitHub Pages Hosted Environment
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-12">
+
+        <!-- Game Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Game Column (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Game Options Toolbar -->
+                <div class="glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Match Mode:</label>
+                        <select id="modeSelect" onchange="resetGame()" class="bg-slate-900 text-xs font-medium text-slate-200 border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-sky-500 cursor-pointer">
+                            <option value="endless">Endless Session</option>
+                            <option value="bo3">Best of 3 (First to 2)</option>
+                            <option value="bo5">Best of 5 (First to 3)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <button id="soundToggle" onclick="toggleSound()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all flex items-center gap-1.5 text-xs font-medium border border-slate-700">
+                            <span id="soundIcon">🔊</span>
+                            <span id="soundText">Audio ON</span>
+                        </button>
+                        <button onclick="resetGame()" class="px-3 py-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 transition-all text-xs font-semibold border border-rose-500/20 flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Reset Engine
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden border border-slate-800">
+                    <div class="grid grid-cols-3 gap-2 text-center relative z-10">
+                        <div class="p-3 rounded-xl bg-slate-900/60 border border-emerald-500/20">
+                            <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Shashank (User)</span>
+                            <div id="playerScore" class="text-4xl font-extrabold text-white mt-1 font-mono">0</div>
+                            <span class="text-[10px] text-slate-500 font-medium">Player Score</span>
+                        </div>
+                        
+                        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-700/50">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ties</span>
+                            <div id="drawScore" class="text-4xl font-extrabold text-slate-300 mt-1 font-mono">0</div>
+                            <span class="text-[10px] text-slate-500 font-medium">Draw Counter</span>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-slate-900/60 border border-rose-500/20">
+                            <span class="text-xs font-bold text-rose-400 uppercase tracking-widest">Computer</span>
+                            <div id="computerScore" class="text-4xl font-extrabold text-white mt-1 font-mono">0</div>
+                            <span class="text-[10px] text-slate-500 font-medium">RNG Engine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Battle Arena Stage -->
+                <div class="glass-panel p-8 rounded-2xl text-center relative overflow-hidden border border-slate-800 min-h-[260px] flex flex-col justify-between">
+                    <div id="gameStatusBadge" class="self-center inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 mb-2">
+                        READY FOR ROUND 1
+                    </div>
+
+                    <div class="flex items-center justify-around my-4">
+                        <div class="flex flex-col items-center">
+                            <div id="playerHand" class="text-6xl sm:text-7xl transition-transform duration-300 animate-float drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                                ✊
+                            </div>
+                            <span class="text-xs font-medium text-slate-400 mt-3">Shashank's Choice</span>
+                        </div>
+
+                        <div class="text-xl font-black text-slate-600 font-mono italic">VS</div>
+
+                        <div class="flex flex-col items-center">
+                            <div id="computerHand" class="text-6xl sm:text-7xl transition-transform duration-300 animate-float drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                                ✊
+                            </div>
+                            <span class="text-xs font-medium text-slate-400 mt-3">Computer Move</span>
+                        </div>
+                    </div>
+
+                    <div id="resultBanner" class="text-sm sm:text-base font-semibold text-slate-300 mt-2 min-h-[24px]">
+                        Select Rock, Paper, or Scissors to execute a round.
+                    </div>
+                </div>
+
+                <div>
+                    <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 text-center">Execute Hand Gesture</span>
+                    <div class="grid grid-cols-3 gap-4">
+                        <button onclick="playRound('rock')" class="group glass-panel hover:bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-sky-500/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center relative overflow-hidden">
+                            <div class="text-4xl sm:text-5xl group-hover:scale-110 transition-transform mb-2">✊</div>
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-sky-400 tracking-wider">ROCK</span>
+                            <span class="block text-[10px] text-slate-500 mt-0.5">Crushes Scissors</span>
+                        </button>
+
+                        <button onclick="playRound('paper')" class="group glass-panel hover:bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-sky-500/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center relative overflow-hidden">
+                            <div class="text-4xl sm:text-5xl group-hover:scale-110 transition-transform mb-2">✋</div>
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-sky-400 tracking-wider">PAPER</span>
+                            <span class="block text-[10px] text-slate-500 mt-0.5">Covers Rock</span>
+                        </button>
+
+                        <button onclick="playRound('scissors')" class="group glass-panel hover:bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-sky-500/50 transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-center relative overflow-hidden">
+                            <div class="text-4xl sm:text-5xl group-hover:scale-110 transition-transform mb-2">✌️</div>
+                            <span class="text-xs font-bold text-slate-200 group-hover:text-sky-400 tracking-wider">SCISSORS</span>
+                            <span class="block text-[10px] text-slate-500 mt-0.5">Cuts Paper</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 h-[610px] flex flex-col">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-100">Telemetry & History Log</h3>
+                            <p class="text-xs text-slate-400">Session round sequence data</p>
+                        </div>
+                        <span id="roundCounter" class="px-2.5 py-1 rounded-md bg-slate-900 text-xs font-mono text-sky-400 border border-slate-800">0 Rounds</span>
+                    </div>
+
+                    <div class="overflow-y-auto flex-1 mt-3 pr-1">
+                        <table class="w-full text-left text-xs">
+                            <thead class="text-[10px] uppercase font-semibold text-slate-500 border-b border-slate-800/80 sticky top-0 bg-slate-900/90 backdrop-blur">
+                                <tr>
+                                    <th class="py-2 px-2">#</th>
+                                    <th class="py-2 px-2">Player</th>
+                                    <th class="py-2 px-2">CPU</th>
+                                    <th class="py-2 px-2">Result</th>
+                                    <th class="py-2 px-2 text-right">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody" class="divide-y divide-slate-800/40 text-slate-300 font-mono">
+                                <tr id="emptyHistoryRow">
+                                    <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
+                                        No rounds executed yet.<br>Click a move to start telemetry tracking.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800/80 text-right">
+                        <button onclick="clearHistory()" class="text-[11px] text-slate-500 hover:text-slate-300 transition-colors">
+                            Clear Log Entries
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Lab Documentation & Technical Report Suite
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Submitted by Shashank Gowda (24BTRSN038) for Web Programming Lab - Case Study 1</p>
+            </div>
+
+            <!-- Tab Navigation Buttons -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-2">
+                <button onclick="switchTab('tab-summary')" id="btn-tab-summary" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-sky-500 text-white transition-all">Tab 1: Executive Summary</button>
+                <button onclick="switchTab('tab-problem')" id="btn-tab-problem" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white transition-all">Tab 2: Problem & Objectives</button>
+                <button onclick="switchTab('tab-arch')" id="btn-tab-arch" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white transition-all">Tab 3: System Architecture</button>
+                <button onclick="switchTab('tab-logic')" id="btn-tab-logic" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white transition-all">Tab 4: Algorithmic Logic</button>
+                <button onclick="switchTab('tab-deploy')" id="btn-tab-deploy" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white transition-all">Tab 5: GitHub Pages Guide</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800 min-h-[300px]">
+                
+                <!-- Tab 1 -->
+                <div id="tab-summary" class="tab-content space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">Executive Summary & Objectives</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        This web application serves as <strong>Case Study 1</strong> for the Web Programming Lab, authored by <strong>Shashank Gowda (USN: 24BTRSN038)</strong>. The project demonstrates the full implementation lifecycle of an event-driven client-side game application built with pure web technologies and deployed on GitHub Pages cloud hosting.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="glass-card p-4 rounded-xl">
+                            <span class="text-xs font-bold text-sky-400 uppercase">Core Lab Scope</span>
+                            <p class="text-xs text-slate-300 mt-1">Develop an interactive front-end application demonstrating DOM manipulation, state management, and responsive CSS grid design.</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl">
+                            <span class="text-xs font-bold text-emerald-400 uppercase">Audio Engine</span>
+                            <p class="text-xs text-slate-300 mt-1">Zero-dependency sound synthesis using HTML5 Web Audio API oscillators for win/loss audio feedback.</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl">
+                            <span class="text-xs font-bold text-purple-400 uppercase">Deployment</span>
+                            <p class="text-xs text-slate-300 mt-1">Version controlled via GitHub repository and delivered publicly using GitHub Pages CD pipeline.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2 -->
+                <div id="tab-problem" class="tab-content hidden space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">Problem Statement & Requirements</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Conventional command-line implementations of decision games lack visual engagement, round telemetry, and modern user experience standards. The key requirement of this lab assignment is to engineer a complete GUI application fulfilling the following criteria:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-sm text-slate-300">
+                        <li><strong>Metadata Transparency:</strong> Top-bar academic card displaying student credentials (Shashank Gowda, 24BTRSN038).</li>
+                        <li><strong>Rule Precision:</strong> Unbiased computer selection using pseudo-random number generation combined with lookup matrices.</li>
+                        <li><strong>Match Mechanics:</strong> Configurable rules support (Endless, Best of 3, Best of 5) with automated victor detection.</li>
+                        <li><strong>Session History:</strong> Real-time table tracking every user gesture, opponent gesture, result, and timestamp.</li>
+                    </ul>
+                </div>
+
+                <!-- Tab 3 -->
+                <div id="tab-arch" class="tab-content hidden space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">System Architecture & Data Flow</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Technology Stack</h4>
+                            <div class="space-y-2">
+                                <div class="p-3 glass-card rounded-lg flex items-center justify-between text-xs">
+                                    <span class="font-semibold text-amber-400">HTML5</span>
+                                    <span class="text-slate-400 font-mono">Semantic Document Architecture</span>
+                                </div>
+                                <div class="p-3 glass-card rounded-lg flex items-center justify-between text-xs">
+                                    <span class="font-semibold text-sky-400">Tailwind CSS</span>
+                                    <span class="text-slate-400 font-mono">Utility-First Dark Slate UI</span>
+                                </div>
+                                <div class="p-3 glass-card rounded-lg flex items-center justify-between text-xs">
+                                    <span class="font-semibold text-yellow-400">JavaScript ES6+</span>
+                                    <span class="text-slate-400 font-mono">Game State & DOM Logic</span>
+                                </div>
+                                <div class="p-3 glass-card rounded-lg flex items-center justify-between text-xs">
+                                    <span class="font-semibold text-emerald-400">Web Audio API</span>
+                                    <span class="text-slate-400 font-mono">Synthetic Frequency Tones</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs font-bold text-slate-200 uppercase tracking-wider">Data Lifecycle Pipeline</h4>
+                            <div class="p-4 glass-card rounded-xl text-xs text-slate-300 space-y-2 leading-relaxed">
+                                <p><strong>1. Event Listener Trigger:</strong> Click event fires <code class="text-sky-400 font-mono">playRound('rock'|'paper'|'scissors')</code>.</p>
+                                <p><strong>2. Computer Generation:</strong> <code class="text-sky-400 font-mono">Math.floor(Math.random() * 3)</code> selects opponent gesture.</p>
+                                <p><strong>3. Matrix Evaluation:</strong> Cyclic rules dictionary resolves <code class="text-emerald-400 font-mono">WIN</code>, <code class="text-rose-400 font-mono">LOSS</code>, or <code class="text-slate-400 font-mono">DRAW</code>.</p>
+                                <p><strong>4. State Mutation:</strong> Scores incremented, Web Audio frequency plays, and history log table updates.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4 -->
+                <div id="tab-logic" class="tab-content hidden space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">JavaScript Logic & Algorithmic Explanation</h3>
+                    <p class="text-sm text-slate-300">
+                        Game rule evaluations avoid redundant nested conditional statements by utilizing a key-value mapping structure:
+                    </p>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
+                        <div class="text-slate-500">// Deterministic Win Dictionary</div>
+                        <div><span class="text-purple-400">const</span> rules = {</div>
+                        <div class="pl-4">rock: <span class="text-emerald-300">'scissors'</span>,   <span class="text-slate-500">// Rock beats Scissors</span></div>
+                        <div class="pl-4">paper: <span class="text-emerald-300">'rock'</span>,        <span class="text-slate-500">// Paper beats Rock</span></div>
+                        <div class="pl-4">scissors: <span class="text-emerald-300">'paper'</span>   <span class="text-slate-500">// Scissors beats Paper</span></div>
+                        <div>};</div>
+                        <div class="pt-2"><span class="text-purple-400">if</span> (userChoice === cpuChoice) {</div>
+                        <div class="pl-4">return <span class="text-slate-400">'DRAW'</span>;</div>
+                        <div>} <span class="text-purple-400">else if</span> (rules[userChoice] === cpuChoice) {</div>
+                        <div class="pl-4">return <span class="text-emerald-400">'USER_WIN'</span>;</div>
+                        <div>} <span class="text-purple-400">else</span> {</div>
+                        <div class="pl-4">return <span class="text-rose-400">'CPU_WIN'</span>;</div>
+                        <div>}</div>
+                    </div>
+                </div>
+
+                <!-- Tab 5 -->
+                <div id="tab-deploy" class="tab-content hidden space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">GitHub & GitHub Pages Step-by-Step Hosting Guide</h3>
+                    <p class="text-sm text-slate-300">
+                        Follow these Terminal commands and GitHub settings to host this application on GitHub Pages:
+                    </p>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 glass-card rounded-lg space-y-1">
+                            <span class="font-bold text-slate-200">Step 1: Initialize Git Repository locally</span>
+                            <div class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-sky-400">
+                                git init<br>
+                                git add index.html<br>
+                                git commit -m "Initial commit - Case Study 1 RPS Application"
+                            </div>
+                        </div>
+
+                        <div class="p-3 glass-card rounded-lg space-y-1">
+                            <span class="font-bold text-slate-200">Step 2: Link to GitHub Remote Repository</span>
+                            <div class="bg-slate-950 p-2 rounded border border-slate-800 font-mono text-sky-400">
+                                git branch -M main<br>
+                                git remote add origin https://github.com/shashankgowda/rps-web-lab.git<br>
+                                git push -u origin main
+                            </div>
+                        </div>
+
+                        <div class="p-3 glass-card rounded-lg space-y-1">
+                            <span class="font-bold text-slate-200">Step 3: Enable GitHub Pages Cloud Deployment</span>
+                            <ol class="list-decimal list-inside space-y-1 text-slate-300 mt-1">
+                                <li>Navigate to repository on GitHub: <code class="text-sky-400 font-mono">github.com/shashankgowda/rps-web-lab</code></li>
+                                <li>Click on <strong>Settings</strong> $\rightarrow$ <strong>Pages</strong> (under Code and automation).</li>
+                                <li>Under <strong>Build and deployment</strong>, set Source to <strong>Deploy from a branch</strong>.</li>
+                                <li>Select <code class="text-emerald-400 font-mono">main</code> branch and folder <code class="text-emerald-400 font-mono">/ (root)</code>, then click <strong>Save</strong>.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div id="winnerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-slate-700 text-center space-y-4 shadow-2xl animate-bounce-short">
+            <div id="modalIcon" class="text-6xl">🏆</div>
+            <h3 id="modalTitle" class="text-2xl font-extrabold text-white">Match Concluded!</h3>
+            <p id="modalDesc" class="text-xs text-slate-300">Target score reached.</p>
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 font-bold text-white text-xs tracking-wider uppercase transition-colors shadow-lg shadow-sky-500/20">
+                Start New Session
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let playerScore = 0;
+        let computerScore = 0;
+        let drawScore = 0;
+        let roundNumber = 0;
+        let isSoundEnabled = true;
+
+        const emojis = {
+            rock: '✊',
+            paper: '✋',
+            scissors: '✌️'
+        };
+
+        const rules = {
+            rock: 'scissors',
+            paper: 'rock',
+            scissors: 'paper'
+        };
+
+        // Web Audio API Synthesizer (No external audio files needed)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!isSoundEnabled) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'win') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'loss') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'draw') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(330, now);
+                osc.frequency.setValueAtTime(330, now + 0.15);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            document.getElementById('soundIcon').innerText = isSoundEnabled ? '🔊' : '🔇';
+            document.getElementById('soundText').innerText = isSoundEnabled ? 'Audio ON' : 'Muted';
+        }
+
+        function playRound(playerChoice) {
+            const mode = document.getElementById('modeSelect').value;
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+            // Visual feedback scaling
+            const pHand = document.getElementById('playerHand');
+            const cHand = document.getElementById('computerHand');
+
+            pHand.classList.add('scale-125');
+            cHand.classList.add('scale-125');
+            setTimeout(() => {
+                pHand.classList.remove('scale-125');
+                cHand.classList.remove('scale-125');
+            }, 200);
+
+            pHand.innerText = emojis[playerChoice];
+            cHand.innerText = emojis[computerChoice];
+
+            roundNumber++;
+            let outcome = '';
+            let statusText = '';
+            let statusBadge = '';
+
+            if (playerChoice === computerChoice) {
+                drawScore++;
+                outcome = 'DRAW';
+                statusText = `Both selected ${playerChoice.toUpperCase()}. Round tied!`;
+                statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">TIE ROUND</span>';
+                playSound('draw');
+            } else if (rules[playerChoice] === computerChoice) {
+                playerScore++;
+                outcome = 'WIN';
+                statusText = `Shashank's ${playerChoice.toUpperCase()} beats Computer's ${computerChoice.toUpperCase()}! 🎉`;
+                statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SHASHANK WON</span>';
+                playSound('win');
+            } else {
+                computerScore++;
+                outcome = 'LOSS';
+                statusText = `Computer's ${computerChoice.toUpperCase()} beats Shashank's ${playerChoice.toUpperCase()}. 🤖`;
+                statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">CPU WON</span>';
+                playSound('loss');
+            }
+
+            // Update UI
+            document.getElementById('playerScore').innerText = playerScore;
+            document.getElementById('computerScore').innerText = computerScore;
+            document.getElementById('drawScore').innerText = drawScore;
+            document.getElementById('resultBanner').innerText = statusText;
+            document.getElementById('gameStatusBadge').innerHTML = statusBadge;
+
+            // Log telemetry
+            addHistoryLog(roundNumber, playerChoice, computerChoice, outcome);
+
+            // Check session targets
+            checkGameTarget(mode);
+        }
+
+        function checkGameTarget(mode) {
+            let targetScore = 0;
+            if (mode === 'bo3') targetScore = 2;
+            if (mode === 'bo5') targetScore = 3;
+
+            if (targetScore > 0) {
+                if (playerScore === targetScore) {
+                    showModal('🏆 Match Victory!', `Congratulations Shashank Gowda! You won the ${mode.toUpperCase()} session by reaching ${targetScore} wins first.`);
+                } else if (computerScore === targetScore) {
+                    showModal('🤖 Computer Defeat', `Computer won the ${mode.toUpperCase()} match by reaching ${targetScore} wins first.`);
+                }
+            }
+        }
+
+        function addHistoryLog(round, user, cpu, result) {
+            const tbody = document.getElementById('historyTableBody');
+            const emptyRow = document.getElementById('emptyHistoryRow');
+            if (emptyRow) emptyRow.remove();
+
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-slate-800/40 transition-colors';
+
+            let resultTag = '';
+            if (result === 'WIN') resultTag = '<span class="text-emerald-400 font-bold">WIN</span>';
+            else if (result === 'LOSS') resultTag = '<span class="text-rose-400 font-bold">LOSS</span>';
+            else resultTag = '<span class="text-slate-400 font-bold">TIE</span>';
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            row.innerHTML = `
+                <td class="py-2.5 px-2 text-slate-500">${round}</td>
+                <td class="py-2.5 px-2">${emojis[user]} ${user}</td>
+                <td class="py-2.5 px-2">${emojis[cpu]} ${cpu}</td>
+                <td class="py-2.5 px-2">${resultTag}</td>
+                <td class="py-2.5 px-2 text-right text-slate-500 text-[10px]">${timeStr}</td>
+            `;
+
+            tbody.insertBefore(row, tbody.firstChild);
+            document.getElementById('roundCounter').innerText = `${round} Rounds`;
+        }
+
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            drawScore = 0;
+            roundNumber = 0;
+
+            document.getElementById('playerScore').innerText = '0';
+            document.getElementById('computerScore').innerText = '0';
+            document.getElementById('drawScore').innerText = '0';
+            document.getElementById('playerHand').innerText = '✊';
+            document.getElementById('computerHand').innerText = '✊';
+            document.getElementById('resultBanner').innerText = 'Game reset. Select Rock, Paper, or Scissors to execute a round.';
+            document.getElementById('gameStatusBadge').innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700">READY FOR ROUND 1</span>';
+            
+            clearHistory();
+        }
+
+        function clearHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = `
+                <tr id="emptyHistoryRow">
+                    <td colspan="5" class="py-12 text-center text-slate-500 font-sans">
+                        No rounds executed yet.<br>Click a move to start telemetry tracking.
+                    </td>
+                </tr>
+            `;
+            document.getElementById('roundCounter').innerText = '0 Rounds';
+        }
+
+        function copyToClipboard(inputId) {
+            const copyText = document.getElementById(inputId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            
+            // Brief visual feedback
+            const btn = copyText.nextElementSibling;
+            const origText = btn.innerText;
+            btn.innerText = "Copied!";
+            btn.classList.add("bg-emerald-600", "text-white");
+            setTimeout(() => {
+                btn.innerText = origText;
+                btn.classList.remove("bg-emerald-600", "text-white");
+            }, 1500);
+        }
+
+        function showModal(title, desc) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDesc').innerText = desc;
+            const modal = document.getElementById('winnerModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('winnerModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            resetGame();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-500', 'text-white');
+                btn.classList.add('bg-slate-900', 'text-slate-400');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('bg-slate-900', 'text-slate-400');
+            activeBtn.classList.add('bg-sky-500', 'text-white');
+        }
+    </script>
+</body>
+</html>
